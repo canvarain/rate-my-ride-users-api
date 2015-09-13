@@ -59,7 +59,7 @@ exports.login = function(req, res, next) {
     return next(error);
   }
 
-  userService.login(credentials, function(err, token) {
+  userService.authenticate(credentials, function(err, token) {
     if(err) {
       return next(err);
     }
@@ -81,7 +81,7 @@ exports.login = function(req, res, next) {
  */
 exports.forgotPassword = function(req, res, next) {
   var data = req.body;
-  var error = controllerHelper.checkString(data.password, 'Password') || controllerHelper.checkString(data.newPassword, 'New Password');
+  var error = controllerHelper.checkString(data.email, 'Email');
   if(error) {
     return next(error);
   }
@@ -108,7 +108,7 @@ exports.updatePassword = function(req, res, next) {
   if(error) {
     return next(error);
   }
-  userService.updatePassword(credentials, req.user, function(err, user) {
+  userService.updatePassword(credentials, req.auth, function(err, user) {
     if(err) {
       return next(err);
     }
@@ -140,7 +140,7 @@ exports.updateProfile = function(req, res, next) {
   if(error) {
     return next(error);
   }
-  userService.updateProfile(entity, req.user, function(err, profile) {
+  userService.updateProfile(entity, req.auth, function(err, profile) {
     if(err) {
       return next(err);
     }
@@ -169,7 +169,7 @@ exports.updateDevice = function(req, res, next) {
     return next(error);
   }
 
-  userService.updateDevice(device, req.user, function(err, user) {
+  userService.updateDevice(device, req.auth, function(err, user) {
     if(err) {
       return next(err);
     }
@@ -191,13 +191,62 @@ exports.updateDevice = function(req, res, next) {
  * @param  {Function}   next      next function to call next middleware in chain
  */
 exports.me = function(req, res, next) {
-  userService.me(req.user, function(err, user) {
+  userService.me(req.auth, function(err, user) {
     if(err) {
       return next(err);
     }
     req.data = {
       statusCode: httpStatus.OK,
       content: user
+    };
+    next();
+  });
+};
+
+/**
+ * Reset the user's forgotten password
+ * Route handler for POST '/resetForgottonPassword' endpoint
+ *
+ * @param  {Object}     req       Express request instance
+ * @param  {Object}     res       Express response instance
+ * @param  {Function}   next      next function to call next middleware in chain
+ */
+exports.resetForgottonPassword = function(req, res, next) {
+  var error = controllerHelper.checkString(req.body.password, 'Password') || controllerHelper.checkString(req.body.token, 'Reset Password Token');
+  if(error) {
+    return next(error);
+  }
+  userService.resetForgottonPassword(req.body, function(err) {
+    if(err) {
+      return next(err);
+    }
+    req.data = {
+      statusCode: httpStatus.OK
+    };
+    next();
+  });
+};
+
+/**
+ * Verify a user's account
+ * Route handler for POST '/verifyAccount' endpoint
+ *
+ * @param  {Object}     req       Express request instance
+ * @param  {Object}     res       Express response instance
+ * @param  {Function}   next      next function to call next middleware in chain
+ */
+exports.verifyAccount = function(req, res, next) {
+  var token = req.query.token;
+  var error = controllerHelper.checkString(token, 'Verification token');
+  if(error) {
+    return next(error);
+  }
+  userService.verifyAccount(token, function(err) {
+    if(err) {
+      return next(err);
+    }
+    req.data = {
+      statusCode: httpStatus.OK
     };
     next();
   });

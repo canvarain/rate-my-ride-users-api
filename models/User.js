@@ -25,6 +25,7 @@
  */
 
 var mongoose = require('../datasource').getMongoose(),
+  timestamps = require('mongoose-timestamp'),
   constants = require('../constants'),
   _ = require('lodash'),
   Schema = mongoose.Schema;
@@ -43,10 +44,10 @@ var UserSchema = new Schema({
   resetPasswordToken: {type: String, required: false},
   verifyAccountToken: {type: String, required: false},
   resetPasswordTokenExpiry: {type: Date, required: false},
-  verifyAccountTokenExpiry: {type: Date, required: false},
-  createdAt: Date,
-  updatedAt: Date
+  verifyAccountTokenExpiry: {type: Date, required: false}
 });
+// add timestamp plugin
+UserSchema.plugin(timestamps);
 
 // module exports
 module.exports = {

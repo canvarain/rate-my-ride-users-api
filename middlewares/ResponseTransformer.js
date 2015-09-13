@@ -23,7 +23,7 @@ var _transform = function(obj) {
   if(obj._id) {
     transformed.id = obj._id;
   }
-  return _.omit(transformed, '_id', '__v', 'password');
+  return _.omit(transformed, '_id', '__v', 'password', 'resetPasswordToken', 'verifyAccountToken', 'resetPasswordTokenExpiry', 'verifyAccountTokenExpiry');
 };
 
 var _doFilter = function(obj, callback) {

@@ -12,9 +12,9 @@ var express = require('express'),
   app = express(),
   bodyParser = require('body-parser'),
   router = require('./router'),
-  CanvaraErrorHandler = require('canvara-error-handler'),
-  CanvaraResponser = require('canvara-responser'),
-  logger = require('canvara-logging'),
+  CanvaraErrorHandler = require('@canvara/canvara-error-handler'),
+  CanvaraResponser = require('@canvara/canvara-responser'),
+  logger = require('@canvara/canvara-logging'),
   responseTransformer = require('./middlewares/ResponseTransformer'),
   config = require('config');
 
@@ -27,8 +27,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(router());
 app.use(responseTransformer());
-app.use(responser.middleware);
-app.use(errorHandler.middleware);
+app.use(responser.middleware());
+app.use(errorHandler.middleware());
 
 app.listen(port, function() {
   logger.info('Application started successfully', {name: config.NAME, port: port});

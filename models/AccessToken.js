@@ -8,6 +8,7 @@
  */
 
 var mongoose = require('../datasource').getMongoose(),
+  timestamps = require('mongoose-timestamp'),
   Schema = mongoose.Schema;
 
 var AccessTokenSchema = new Schema({
@@ -15,6 +16,8 @@ var AccessTokenSchema = new Schema({
   refreshToken: {type: String, required: false},
   socialNetwork: {type: String, required: true}
 });
+// use timestamp plugins
+AccessTokenSchema.plugin(timestamps);
 
 // module exports
 module.exports = {

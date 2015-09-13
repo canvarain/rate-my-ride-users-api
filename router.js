@@ -9,10 +9,11 @@
  */
 
 var express = require('express');
-var CanvaraAuth = require('canvara-auth');
+var CanvaraAuth = require('@canvara/canvara-auth');
 var userController = require('./controllers/UserController');
 var countryController = require('./controllers/CountryController');
-var auth = new CanvaraAuth();
+var config = require('config');
+var auth = new CanvaraAuth({jwtSecret: config.JWT_SECRET});
 var tokenMiddleware = auth.process({strategy: CanvaraAuth.strategy.token});
 
 module.exports = function() {
@@ -32,6 +33,7 @@ module.exports = function() {
   router.post('/users/updateDevice', tokenMiddleware, userController.updateDevice);
   router.get('/me', tokenMiddleware, userController.me);
   router.get('/countries', countryController.getAll);
-  // TODO: /resetForgottonPassword this can be a jade template
+  router.post('/resetForgottonPassword', userController.resetForgottonPassword);
+  router.get('/verifyAccount', userController.verifyAccount);
   return router;
 };

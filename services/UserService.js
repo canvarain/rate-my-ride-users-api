@@ -52,7 +52,8 @@ exports.register = function(data, callback) {
     function(cb) {
       countryService.validateCountry(entity.country, cb);
     },
-    function(cb) {
+    function(country, cb) {
+      _.extend(entity.country, country);
       _findByEmail(entity.email, function(err, user) {
         if(err) {
           cb(err);
@@ -229,4 +230,54 @@ exports.updateDevice = function(data, authUser, callback) {
  */
 exports.me = function(authUser, callback) {
   User.findById(authUser.userId, callback);
+};
+
+/**
+ * Reset forgotten password for the user
+ *
+ * @param  {Object}       entity          data sent from client
+ * @param  {Function}     callback        callback function
+ */
+exports.resetForgottonPassword = function(entity, callback) {
+  async.waterfall([
+    function(cb) {
+      User.findOne({resetPasswordToken: entity.token}, cb);
+    },
+    function(user, cb) {
+      if(!user) {
+        return cb(new errors.ValidationError('Invalid rest password token'));
+      }
+      var timestamp = moment().valueOf();
+      if(timestamp >= user.resetPasswordTokenExpiry) {
+        return cb(new errors.ValidationError('Reset password token is expired'));
+      }
+      _.extend(user, {resetPasswordTokenExpiry: undefined, resetPasswordToken: undefined});
+      user.save(cb);
+    }
+  ], callback);
+};
+
+/**
+ * Verify user account, this verifies the user's email
+ *
+ * @param  {String}       token           verify account token
+ * @param  {Function}     callback        callback function
+ */
+exports.verifyAccount = function(token, callback) {
+  async.waterfall([
+    function(cb) {
+      User.findOne({verifyAccountToken: token}, cb);
+    },
+    function(user, cb) {
+      if(!user) {
+        return cb(new errors.ValidationError('Invalid account verification token'));
+      }
+      var timestamp = moment().valueOf();
+      if(timestamp >= user.verifyAccountTokenExpiry) {
+        return cb(new errors.ValidationError('Account verification token is expired'));
+      }
+      _.extend(user, {verifyAccountToken: undefined, verifyAccountTokenExpiry: undefined});
+      user.save(cb);
+    }
+  ], callback);
 };

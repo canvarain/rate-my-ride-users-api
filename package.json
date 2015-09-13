@@ -29,12 +29,23 @@
   "license": "UNLICENSED",
   "main": "server.js",
   "dependencies": {
-    "http-status": "^0.2.0",
-    "@canvara/canvara-logging": "^1.0.0",
-    "@canvara/canvara-responser": "^1.0.0",
     "@canvara/canvara-auth": "^1.0.0",
     "@canvara/canvara-error-handler": "^1.0.0",
-    "express": "^4.13.1"
+    "@canvara/canvara-logging": "^1.0.0",
+    "@canvara/canvara-responser": "^1.0.0",
+    "async": "^1.4.2",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.13.3",
+    "common-errors": "^0.5.1",
+    "config": "^1.16.0",
+    "country-data": "0.0.22",
+    "express": "^4.13.1",
+    "http-status": "^0.2.0",
+    "jwt-simple": "^0.3.1",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "mongoose": "^4.1.6",
+    "mongoose-timestamp": "^0.4.0"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "^0.10.0",
