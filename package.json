@@ -33,6 +33,7 @@
     "@canvara/canvara-error-handler": "^1.0.0",
     "@canvara/canvara-logging": "^1.0.0",
     "@canvara/canvara-responser": "^1.0.0",
+    "@canvara/canvara-sqs": "^1.0.0",
     "async": "^1.4.2",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.13.3",

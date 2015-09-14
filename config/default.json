@@ -1,8 +1,26 @@
 {
     "NAME": "ratemyride: users API",
-    "APPLICATION_PREFIX": "rmr-users-api",
     "REGION": "ap-southeast-1",
     "TOKEN_EXPIRATION_IN_MILLIS": 5184000000,
     "DEFAULT_TOKEN_LENGTH": 48,
-    "DEFAULT_TOKEN_EXPIRY": 86400000
+    "DEFAULT_TOKEN_EXPIRY": 86400000,
+    "FORGOT_PASSWORD_TASK_QUEUE_NAME": "ratemyride-users-api-forgot-password",
+    "USER_REGISTERED_TASK_QUEUE_NAME": "ratemyride-users-api-user-registered",
+    "WEBSITE_LINK": "https://ratemyride.herokuapp.com",
+    "VERIFY_ACCOUNT_LINK": "https://ratemyride.herokuapp.com/verifyaccount/:token",
+    "RESET_PASSWORD_LINK": "https://ratemyride.herokuapp.com/forgotpassword/:token",
+    "SQS_QUEUES": [
+        {
+            "name": "ratemyride-users-api-forgot-password",
+            "attributes": {
+                "VisibilityTimeout": "900"
+            }
+        },
+        {
+            "name": "ratemyride-users-api-user-registered",
+            "attributes": {
+                "VisibilityTimeout": "900"
+            }
+        }
+    ]
 }

@@ -16,7 +16,8 @@ var express = require('express'),
   CanvaraResponser = require('@canvara/canvara-responser'),
   logger = require('@canvara/canvara-logging'),
   responseTransformer = require('./middlewares/ResponseTransformer'),
-  config = require('config');
+  config = require('config'),
+  canvaraSqs = require('./sqs').getInstance(config.REGION, config.SQS_QUEUES);
 
 var port = process.env.PORT || config.WEB_SERVER_PORT || 3100;
 
@@ -29,7 +30,12 @@ app.use(router());
 app.use(responseTransformer());
 app.use(responser.middleware());
 app.use(errorHandler.middleware());
-
-app.listen(port, function() {
-  logger.info('Application started successfully', {name: config.NAME, port: port});
+canvaraSqs.init(function(err) {
+  if(err) {
+    logger.error('Error setting up SQS QUEUES', err);
+    throw err;
+  }
+  app.listen(port, function() {
+    logger.info('Application started successfully', {name: config.NAME, port: port});
+  });
 });

@@ -17,6 +17,7 @@
 var UserSchema = require('../models/User').UserSchema,
   config = require('config'),
   db = require('../datasource').getDb(config.MONGODB_URL, config.POOL_SIZE),
+  canvaraSqs = require('../sqs').getInstance(config.REGION, config.SQS_QUEUES),
   User = db.model('User', UserSchema);
 
 var async = require('async'),
@@ -78,8 +79,10 @@ exports.register = function(data, callback) {
       User.create(entity, cb);
     },
     function(user, cb) {
-      // TODO: Use SQS/SES to send email notification to user
-      cb(null, user);
+      var message = JSON.stringify({verifyAccountTokenExpiry: user.verifyAccountTokenExpiry, link: config.VERIFY_ACCOUNT_LINK.replace(':token', user.verifyAccountToken)});
+      canvaraSqs.sendMessage(config.USER_REGISTERED_TASK_QUEUE_NAME, message, function(err) {
+        cb(err, user);
+      });
     }
   ], callback);
 };
@@ -132,7 +135,30 @@ exports.authenticate = function(credentials, callback) {
  * @param  {Function}     callback        callback function
  */
 exports.forgotPassword = function(email, callback) {
-  // TODO: use SQS/SES to send forgot password email
+  async.waterfall([
+    function(cb) {
+      _findByEmail(email, cb);
+    },
+    function(user, cb) {
+      if(!user) {
+        return cb(new errors.NotFoundError('User not found with given email address'));
+      }
+      helper.randomBytes(config.DEFAULT_TOKEN_LENGTH, function(err, token) {
+        cb(err, user, token);
+      });
+    },
+    function(user, token, cb) {
+      var millis = moment().valueOf() + config.DEFAULT_TOKEN_EXPIRY;
+      _.extend(user, {resetPasswordTokenExpiry: millis, resetPasswordToken: token});
+      user.save(cb);
+    },
+    function(user, cb) {
+      var message = JSON.stringify({resetPasswordTokenExpiry: user.resetPasswordTokenExpiry, link: config.RESET_PASSWORD_LINK.replace(':token', user.resetPasswordToken)});
+      canvaraSqs.sendMessage(config.FORGOT_PASSWORD_TASK_QUEUE_NAME, message, function(err) {
+        cb(err);
+      });
+    }
+  ], callback);
 };
 
 /**
