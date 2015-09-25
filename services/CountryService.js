@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * This Service exposes the contract with the 'countries' data
+ *
+ * @author      ritesh
+ * @version     1.0.0
+ */
+
 var countryData = require('country-data');
 var errors = require('common-errors');
 

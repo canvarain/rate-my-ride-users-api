@@ -7,13 +7,6 @@
  * @version     1.0.0
  */
 
-/**
- * This Service exposes the contract with the 'users' collection in the database
- *
- * @author      ritesh
- * @version     1.0
- */
-
 var UserSchema = require('../models/User').UserSchema,
   config = require('config'),
   db = require('../datasource').getDb(config.MONGODB_URL, config.POOL_SIZE),
