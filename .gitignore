@@ -33,3 +33,6 @@ env
 # npmrc files
 .npmrc
 npmrc
+
+# ignore any accidentally added Dockerfile, the Dockerfile will be build from Dockerfile template
+Dockerfile
