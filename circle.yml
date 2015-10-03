@@ -4,7 +4,7 @@ machine:
 dependencies:
   override:
     - docker info
-    - sed -e s/NPM_TOKEN/$NPM_TOKEN/g Dockerfile > Dockerfile
+    - sed -e s/NPM_TOKEN/$NPM_TOKEN/g Dockerfile.tmpl > Dockerfile
 test:
   override:
 deployment:
