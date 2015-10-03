@@ -1,0 +1,16 @@
+machine:
+  services:
+    - docker
+dependencies:
+  override:
+    - docker info
+    - sed -e s/NPM_TOKEN/$NPM_TOKEN/g Dockerfile > Dockerfile
+test:
+  override:
+deployment:
+ staging:
+  branch: master
+  commands:
+   - docker build -t canvara/rate-my-ride-users-api .
+   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+   - docker push canvara/rate-my-ride-users-api
