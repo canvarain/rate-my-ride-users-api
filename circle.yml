@@ -7,6 +7,7 @@ dependencies:
     - sed -e s/NPM_TOKEN/$NPM_TOKEN/g Dockerfile.tmpl > Dockerfile
 test:
   override:
+    - echo "Dummy tests building docker image"
 deployment:
  staging:
   branch: master

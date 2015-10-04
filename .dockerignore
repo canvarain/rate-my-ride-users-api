@@ -1,4 +1,7 @@
 Dockerfile
+Dockerfile.tmpl
+supervisord.conf
+circle.yml
 .dockerignore
 .env
 env

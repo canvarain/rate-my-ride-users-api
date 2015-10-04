@@ -16,14 +16,14 @@ COPY . /rate-my-ride-users-api
 # configure the npmrc file
 RUN echo "//registry.npmjs.org/:_authToken=NPM_TOKEN" > ~/.npmrc
 
+# Exclude npm cache from the image
+VOLUME /root/.npm
+
 # Install app dependencies
-RUN cd /rate-my-ride-users-api; npm install
+RUN cd /rate-my-ride-users-api; npm install; rm ~/.npmrc
 
 # expose environment variable
 EXPOSE 3300
-
-# create log mount point
-VOLUME /var/log /var/log
 
 # start supervisor
 CMD ["/usr/bin/supervisord"]
