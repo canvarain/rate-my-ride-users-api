@@ -4,20 +4,21 @@ FROM node:0.12
 # Maintainer
 MAINTAINER Ritesh Sangwan <sangwan.ritesh@yahoo.in>
 
-# install supervisor
-RUN apt-get update && apt-get install -y supervisor
+# Bundle app source
+COPY . /rate-my-ride-users-api
+
+RUN apt-get update && apt-get install -y --no-install-recommends libkrb5-dev supervisor \
+    && echo "//registry.npmjs.org/:_authToken=NPM_TOKEN" > ~/.npmrc \
+    && cd /rate-my-ride-users-api \
+    && npm install \
+    && rm ~/.npmrc \
+    && rm -rf /var/lib/apt/lists/*
 
 # copy the supervisor conf file
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Bundle app source
-COPY . /rate-my-ride-users-api
-
 # Exclude npm cache from the image
 VOLUME /root/.npm
-
-# Install app dependencies
-RUN echo "//registry.npmjs.org/:_authToken=NPM_TOKEN" > ~/.npmrc; cd /rate-my-ride-users-api; npm install; rm ~/.npmrc
 
 # expose environment variable
 EXPOSE 3300

@@ -36,3 +36,6 @@ npmrc
 
 # ignore any accidentally added Dockerfile, the Dockerfile will be build from Dockerfile template
 Dockerfile
+
+# any swap files
+*.swp
